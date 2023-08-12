@@ -1,0 +1,65 @@
+﻿@using Budmar_app.Controllers;
+@using Budmar_app.ViewModels.EmployeeViewModels;
+
+
+@model EmployeeViewModel
+
+@using (Html.BeginForm(nameof(EmployeeController.Edit), "Employee", FormMethod.Post))
+{
+    <div class="modal fade" id="edit-employee-modal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="edit-employee-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title fs-2" id="edit-employee-modal-label"><span><i class="bi bi-person-gear fs-2"></i></span> @Model.FirstName @Model.LastName</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input asp-for="Id" value="@Model.Id" class="form-control" hidden/>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FirstName"></label><span class="text-danger">*</span>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-file-earmark-person"></i></span>
+                            <input asp-for="FirstName" class="form-control" required />
+                        </div>
+                        <span asp-validation-for="FirstName" class="text-danger opacity-75"></span>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label asp-for="LastName"></label><span class="text-danger">*</span>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-file-earmark-person-fill"></i></span>
+                            <input asp-for="LastName" class="form-control" required />
+                        </div>
+                        <span asp-validation-for="LastName" class="text-danger opacity-75"></span>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label asp-for="HourlyWageString"></label><span class="text-danger">*</span>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-cash"></i></span>
+                            <input asp-for="HourlyWageString" value="@Model.HourlyWage" id="hourly-wage-edit-input" class="form-control" required>
+                            <span class="input-group-text">SEK</span>
+                        </div>
+                        <span asp-validation-for="HourlyWageString" class="text-danger opacity-75"></span>
+                    </div>
+                    <hr>
+                    <div class="mt-2 mb-0">
+                        <p><span class="text-danger">*</span> Pola wymagane</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                    <button type="submit" class="btn btn-primary">Zapisz</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    $(function () {
+        $('#hourly-wage-edit-input').maskMoney({
+            decimal: ',',
+            thousands: ' '
+        });
+    })
+</script>

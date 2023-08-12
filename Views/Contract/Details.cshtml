@@ -1,0 +1,264 @@
+﻿@using Budmar_app.Enums;
+@using Budmar_app.ViewModels.WorkHourViewModels;
+@using System.ComponentModel.DataAnnotations;
+@model Budmar_app.ViewModels.ContractViewModels.ContractDetalisViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+@{
+    var salarySupps = Enum.GetValues(typeof(SalarySupplement)).Cast<SalarySupplement>();
+}
+<div class="title-header">
+    <div class="row">
+        <div class="col-xl-6 col-md-12">
+            <h1>@Model.Title</h1>
+        </div>
+        <div class="col-xl-6 col-md-12 text-end header-button">
+            <a asp-action="Create" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#create-workhour-modal"><i class="bi bi-plus"></i> Dodaj godziny</a>
+        </div>
+    </div>
+</div>
+@await Component.InvokeAsync("CreateWorkHour", Model.Id)
+
+<div class="row">
+    <nav class="col-6" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Strona główna</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Contract" asp-action="Index">Kontrakty</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
+        </ol>
+    </nav>
+    <div class="d-flex flex-row-reverse col-6">
+        <a class="icon-link icon-link-hover link-secondary link-underline-success link-underline-opacity-25" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Więcej
+            <i class="bi bi-arrow-down"></i>
+        </a>
+
+    </div>
+</div>
+
+<div class="container">
+    <hr />
+    <div class="collapse" id="collapseExample">
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Title)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Title)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Address)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Address)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.StartDate)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.StartDate)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.EndDate)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.EndDate)
+            </dd>
+        </dl>
+    </div>   
+</div>
+
+<div class="container">
+    <table class="table table-light table-hover"
+           data-toggle="table"
+           data-pagination="true"
+           data-page-size="5"
+           data-search="true"
+           data-searchable="true"
+           data-advanced-search="true"
+           data-sortable="true"
+           data-locale="pl-PL">
+        <caption>
+            <div class="row container">
+                <ul class="col-2 m-2">
+                    <li>
+                        <span class="badge text-bg-danger">B</span> - Bez dodatku
+                    </li>
+                    <li>
+                        <span class="badge text-bg-warning">D</span> - Dniówka
+                    </li>
+                    <li>
+                        <span class="badge text-bg-dark">N</span> - Nocka
+                    </li>
+
+                </ul>
+                <ul class="col-2 m-2">
+                    <li>
+                        <span class="badge text-bg-success">W</span> - Weekend
+                    </li>
+                    <li>
+                        <span class="badge text-bg-primary">S</span> - Święta
+                    </li>
+                </ul>
+            </div>
+            
+        </caption>
+        
+        <thead class="table-dark">
+            <tr>
+                <th 
+                    class="align-middle" 
+                    scope="col"
+                    data-sortable="true"
+                    data-width="50"
+                    data-align="center">
+                    #
+                </th>
+                <th 
+                    class="align-middle"
+                    data-sortable="true">
+                    Pracownik
+                </th>
+                <th 
+                    class="align-middle"
+                    data-sortable="true"
+                    data-align="center">
+                    Data
+                </th>
+                <th 
+                    class="align-middle"
+                    data-sortable="true"
+                    data-width="100">
+                    Liczba godzin
+                </th>
+                <th 
+                    class="align-middle"
+                    data-sortable="true"
+                    data-width="50">
+                    Dodatek
+                </th>
+                <th class="align-middle"
+                    data-sortable="true">
+                    Stawka
+                </th>
+                <th 
+                    class="align-middle"
+                    data-sortable="true">
+                    Wynagrodzenie
+                </th>
+                <th 
+                    class="align-middle col-3 text-center" 
+                    scope="col"
+                    data-width="200">
+                    Opcje
+                </th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            @{
+                int rowNumber = 0;
+            }
+            @foreach (var contract in Model.WorkHours)
+            {
+                <tr>
+                    <th class="align-middle" scope="row">
+                        @{
+                            rowNumber++;
+                        } @rowNumber
+                    </th>
+                    <td class="align-middle">
+                        @contract.Employee.FirstName @contract.Employee.LastName
+                    </td>
+                    <td class="align-middle">
+                        @contract.StartTime.ToShortDateString()
+                    </td>
+                    <td class="align-middle text-center">
+                        @{
+                            var timeSpan = contract.EndTime - contract.StartTime;
+                        }
+                        @timeSpan.Hours
+                    </td>
+                    <td class="align-middle text-center">
+                        <span class="badge" id="@contract.SalarySupplement.ToString()">
+                            
+                            @((contract.SalarySupplement.GetType().GetField(contract.SalarySupplement.ToString())?
+                                .GetCustomAttributes(typeof(DisplayAttribute), false)
+                                .FirstOrDefault() as DisplayAttribute)?.Prompt ?? contract.SalarySupplement.ToString())
+                        </span>                       
+                    </td>
+                    <td class="align-middle text-center">
+                        @contract.BaseHourlyWage
+                    </td>
+                    <td class="align-middle text-center">
+                        @contract.DailySalary SEK
+                    </td>
+                    <td class="align-middle text-center">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-info"><a asp-controller="WorkHour" asp-action="Details" asp-route-id="@contract.Id" style="text-decoration: none; color:black"><i class="bi bi-info-square"></i> Info</a></button>
+                            <button type="button" class="btn btn-danger"><i class="bi bi-trash"></i> Usuń</button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        
+    </table>
+    <hr />
+</div>
+<div class="container" style="border: 1px solid">
+    <div id='contractCalendar'></div>
+</div>
+
+
+<script type="text/javascript">
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('contractCalendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            height: 550,
+            aspectRatio: 1,
+            contentHeight: 100,
+            themeSystem: 'bootstrap5',
+            initialView: 'dayGridMonth',
+            navLinks: true,
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            eventDisplay: 'block',
+            eventTimeFormat:{
+                hour: 'numeric',
+                minute: '2-digit',
+                meridiem: false
+            },
+            displayEventEnd: true,
+            locale: 'pl',
+            events:[
+                @foreach (var item in Model.WorkHours)
+                { 
+                    <text>
+                    {
+                    title: '@item.Employee.FirstName @item.Employee.LastName',
+                    start: new Date(@item.StartTime.Year, @item.StartTime.Month - 1, @item.StartTime.Day, @item.StartTime.Hour, @item.StartTime.Minute),
+                    end: new Date(@item.EndTime.Year, @item.EndTime.Month - 1, @item.EndTime.Day, @item.EndTime.Hour, @item.EndTime.Minute) 
+                    },
+                    </text>
+                }
+                
+            ],
+            eventColor: '#378006'
+        });
+        calendar.render();
+    });
+
+</script>

@@ -1,0 +1,97 @@
+﻿@using Budmar_app.ViewModels.ContractViewModels;
+@model IEnumerable<Budmar_app.ViewModels.ContractViewModels.ContractViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="title-header">
+    <div class="row">
+        <div class="col-xl-6 col-md-12">
+            <h1>Kontrakty</h1>
+        </div>
+        <div class="col-xl-6 col-md-12 text-end header-button">
+            <a asp-action="Create" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#create-contract-modal"><i class="bi bi-plus"></i> Dodaj kontrakt</a>
+        </div>
+    </div>
+</div>
+
+
+<div>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Strona główna</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Kontrakty</li>
+        </ol>
+    </nav>
+</div>
+<hr />
+
+<table 
+    class="table table-light table-hover" 
+    data-toggle="table"
+    data-pagination="true" 
+    data-search="true"
+    data-show-search-button="true"
+    data-searchable="false"
+    data-locale="pl-PL"
+    >
+    <thead class="table-dark">
+        <tr>
+            <th class="align-middle" scope="col">#</th>
+            <th class="align-middle"
+                data-searchable="true">
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th class ="align-middle"
+                data-searchable="true">
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th class="align-middle"
+                data-searchable="true">
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th class="align-middle"
+                data-searchable="true">
+                @Html.DisplayNameFor(model => model.EndDate)
+            </th>
+            <th class="align-middle col-3 text-center" scope="col">Opcje</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        @{
+            int rowNumber = 0;
+        }
+@foreach (var contract in Model) {
+        <tr>
+                <th class="align-middle" scope="row">
+                    @{
+                        rowNumber++;
+                    } @rowNumber
+                </th>
+                <td class="align-middle">
+                @Html.DisplayFor(modelItem => contract.Title)
+            </td>
+                <td class="align-middle">
+                @Html.DisplayFor(modelItem => contract.Address)
+            </td>
+                <td class="align-middle">
+                @Html.DisplayFor(modelItem => contract.StartDate)
+            </td>
+                <td class="align-middle">
+                @Html.DisplayFor(modelItem => contract.EndDate)
+            </td>
+                <td class="align-middle text-center">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-info"><a asp-action="Details" asp-route-id="@contract.Id" style="text-decoration: none; color:black"><i class="bi bi-info-square"></i> Info</a></button>
+                        <button type="button" class="btn btn-danger"><i class="bi bi-trash"></i> Usuń</button>
+                    </div>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+
+
+@await Component.InvokeAsync("CreateContract", new ContractViewModel())

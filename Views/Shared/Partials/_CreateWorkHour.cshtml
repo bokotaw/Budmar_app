@@ -1,0 +1,159 @@
+﻿@using Budmar_app.Controllers;
+@using Budmar_app.Enums;
+@using Budmar_app.ViewModels.WorkHourViewModels;
+@using System.ComponentModel.DataAnnotations;
+
+@model WorkHourViewModel
+
+@{
+    var salarySupplements = Enum.GetValues(typeof(SalarySupplement)).Cast<SalarySupplement>();
+}
+
+
+@using (Html.BeginForm(nameof(WorkHourController.Create), "WorkHour", FormMethod.Post))
+{
+    <div class="modal fade" id="create-workhour-modal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="create-workhour-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-success">
+                    <h5 class="modal-title fs-2" id="create-workhour-modal-label"><span><i class="bi bi-calendar-plus fs-2"></i></span> Godziny pracy</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="mb-1">Kontrakt</label><span class="text-danger">*</span>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-journal"></i></span>
+                            <input asp-for="ContractTitle" class="form-control" readonly>
+                        </div>                        
+                        <input asp-for="ContractId" hidden>
+                    </div>
+                    <div class="form-group mt-2">
+                        <div>
+                            <label class="mb-1">Pracownik</label><span class="text-danger">*</span>
+                         
+                            <select asp-for="EmployeeId" class="form-select form-control">
+                                @foreach (var employee in ViewBag.Employees)
+                                {
+                                    <option value="@employee.Id">
+                                        @employee.FirstName @employee.LastName @*@employee.HourlyWage SEK*@
+                                    </option>
+                                }
+                            </select>
+                            <span asp-validation-for="EmployeeId" class="text-danger opacity-75"></span>                           
+                        </div>
+                    </div>
+                    <div class="form-group row mt-2">
+                        <label class="mb-1">Godziny zmiany:</label>
+                        <div class="form-group col-6">
+                            <label asp-for="StartTime"></label><span class="text-danger">*</span>
+                            <div class="input-group">
+                                <input id="start-workhour-picker" asp-for="StartTime" class="form-control" />
+                                @*<span class="input-group-text"><i class="bi bi-calendar-plus"></i></span>*@
+                            </div>
+                            <span asp-validation-for="StartTime" class="text-danger opacity-75"></span>
+                        </div>
+
+                        <div class="form-group col-6">
+                            <label asp-for="EndTime"></label>
+                            <div class="input-group">
+                                <input id="end-workhour-picker" asp-for="EndTime" class="form-control" />
+                                @*<span class="input-group-text"><i class="bi bi-calendar-plus"></i></span>*@
+                            </div>
+                            <span asp-validation-for="EndTime" class="text-danger opacity-75"></span>
+                        </div>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label class="mb-1">Dodatki:</label>
+                        @foreach (var salarySupplement in salarySupplements)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" value="@salarySupplement" type="radio" name="salarySupplement" id="@salarySupplement.ToString()">
+                                <label class="form-check-label" for="@salarySupplement.ToString()">
+                                    @((salarySupplement.GetType().GetField(salarySupplement.ToString())?
+                                        .GetCustomAttributes(typeof(DisplayAttribute), false)
+                                        .FirstOrDefault() as DisplayAttribute)?.Name ?? salarySupplement.ToString())
+                                    @{
+                                    var title = ((salarySupplement.GetType().GetField(salarySupplement.ToString())?
+                                    .GetCustomAttributes(typeof(DisplayAttribute), false)
+                                    .FirstOrDefault() as DisplayAttribute)?.Description ?? salarySupplement.ToString());
+                                    <a class="text-muted" href="#" data-bs-toggle="tooltip" data-bs-title="@title" data-icon="bi bi-info-circle"><i class="bi bi-info-circle"></i></a>
+                                    }
+                                    <br />
+                                </label>
+                            </div>
+                        }
+                        
+                    </div>
+                    <hr>
+                    <div class="mt-2 mb-0">
+                        <p><span class="text-danger">*</span> Pola wymagane</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                    <button type="submit" class="btn btn-primary">Dodaj</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+
+    flatpickr(document.getElementById('start-workhour-picker'), {
+        enableTime: true,
+        static: true,
+        defaultDate: new Date(),
+        "locale": "pl",
+        onChange: function () {
+            // Obsługa zmiany daty/godziny, jeśli potrzebna
+        }
+    });
+
+    flatpickr(document.getElementById('end-workhour-picker'), {
+        enableTime: true,
+        static: true,
+        defaultDate: new Date(),
+        "locale": "pl",
+        onChange: function () {
+            // Obsługa zmiany daty/godziny, jeśli potrzebna
+        }
+    });
+   
+    @*document.addEventListener('DOMContentLoaded', function () {
+        flatpickr('[data-input]', {
+            enableTime: true,
+            time_24hr: true,
+            defaultDate: new Date(),
+            "locale": "pl",
+            onChange: function (selectedDates, dateStr, instance) {
+                // Ustaw wartość pola StartTIme i EndTime na wybrane daty
+                document.querySelector('input[name="StartTime"]').value = dateStr;
+                document.querySelector('input[name="EndTime"]').value = document.querySelector('input[name="end-time"]').value;
+
+                calculateTimeDifference();
+            }
+        });
+
+        function calculateTimeDifference() {
+            var startTime = document.querySelector('input[name="start-time"]').value;
+            var endTime = document.querySelector('input[name="end-time"]').value;
+
+            if (startTime && endTime) {
+                var startDate = new Date(startTime);
+                var endDate = new Date(endTime);
+
+                var sec = ((endDate - (startDate))/1000);
+
+                var min = Math.floor(sec / 60);
+
+                var hours = Math.floor(min / 60);
+
+                // Wyświetlenie różnicy w polu tekstowym
+                var differenceOutput = document.getElementById('time-difference');
+                differenceOutput.textContent = hours + "." + min % 60;
+            }
+        }
+    });*@
+       
+</script>

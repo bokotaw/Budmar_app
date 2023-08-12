@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+
+<div id="grid"></div>
+
+
+<script>
+    
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth'
+        });
+        calendar.render();
+    });
+
+</script>
+
+
+
+<div id='calendar'></div>
+
+
+
+
+
+@*<div id="flatpickrcontainer">
+    <input type="text" id="time" placeholder="Select Date.." data-input>
+</div>
+<input class="calendar" type="text" placeholder="Select Date..">
+<script>
+
+    // js initialization
+
+    
+</script>*@

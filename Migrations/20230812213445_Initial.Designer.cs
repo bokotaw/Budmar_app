@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Budmar_app.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230811184507_workhourEntityChanges")]
-    partial class workhourEntityChanges
+    [Migration("20230812213445_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -152,7 +152,7 @@ namespace Budmar_app.Migrations
                     b.HasOne("Budmar_app.Models.Contract", "Contract")
                         .WithMany("ContractExpenses")
                         .HasForeignKey("ContractId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Contract");
@@ -163,13 +163,13 @@ namespace Budmar_app.Migrations
                     b.HasOne("Budmar_app.Models.Contract", "Contract")
                         .WithMany("WorkHours")
                         .HasForeignKey("ContractId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Budmar_app.Models.Employee", "Employee")
                         .WithMany("WorkHours")
                         .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Contract");
